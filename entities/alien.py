@@ -29,13 +29,11 @@ class Alien(Sprite):
 
     # ---Update aliens position---
     def update(self):
+        
         # ---Move the alien right or left
         self.x += (self.ai_settings.alien_speed_factor * self.ai_settings.fleet_direction)
         self.rect.x = self.x
         self.coordinates = (self.rect.x, self.rect.y)
-        # print("X: " + str(self.rect.x))
-        # print("Y: " + str(self.rect.y))
-        # print(self.coordinates)
 
     # ---Alien rendering---
     def blitme(self):

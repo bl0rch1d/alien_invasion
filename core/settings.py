@@ -29,14 +29,13 @@ class Settings():
         self.alien_freezing_active = False
         self.additional_ship_active = False
 
-
-
         self.initialize_dynamic_settings()
 
     def initialize_dynamic_settings(self):
         self.ship_speed_factor = 2
         self.bullet_speed_factor = 1
         self.alien_speed_factor = 1
+
         # ---fleet direction of 1 represents right, of -1 left.
         self.fleet_direction = 1
         self.alien_points = 50
@@ -46,6 +45,5 @@ class Settings():
         self.bullet_speed_factor *= self.speedup_scale
         self.alien_speed_factor *= self.speedup_scale
         self.alien_points = int(self.alien_points * self.score_scale)
-        # print(self.alien_points)
         
     

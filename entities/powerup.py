@@ -12,7 +12,6 @@ class PowerUp(Sprite):
         self.image = pygame.image.load('./images/star24x.png')
         self.rect = self.image.get_rect()
         
-        # self.rect.center = self.screen_rect.center
         self.rect.x = alienX
         self.rect.y = alienY
 

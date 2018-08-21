@@ -3,11 +3,9 @@ from pygame.sprite import Sprite
 
 class Bullet(Sprite):
     def __init__(self, ai_settings, screen, ship):
+
         # ---create a bullet obj at the ship current position---
-        # python 2.7 ver. inheritance
-        super(Bullet, self).__init__()
-        # python 3.6 ver. inheritance
-        # super().__init__(self, Bullet)
+        super().__init__(self, Bullet)
         self.screen = screen
         self.ai_settings = ai_settings
         self.ship = ship
@@ -25,6 +23,7 @@ class Bullet(Sprite):
         self.speed_factor = self.ai_settings.bullet_speed_factor
     
     def update(self):
+        
         # ---bullet position update---
         self.y -= self.speed_factor
         # ---rect position update---

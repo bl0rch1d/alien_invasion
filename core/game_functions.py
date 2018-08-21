@@ -1,15 +1,15 @@
 import sys
-from time import sleep
 import time
-from random import randint
 import pygame
+import sched
+
+from time import sleep
+from random import randint
+
 from entities.bullet import Bullet
 from entities.alien import Alien
 from entities.powerup import PowerUp
-# from bullet import Bullet
-# from alien import Alien
-# from powerup import PowerUp
-import sched
+
 
 
 # ---KeyDown events check---
@@ -29,11 +29,13 @@ def check_keydown_events(event, ai_settings, screen, stats, sb, ship, aliens, bu
     #     sleep(0.5)
     #     start_game(ai_settings, screen, stats, sb, ship, aliens, bullets)
 
+
 # ---Bullets firing and quantity limitation---
 def fire_bullet(ai_settings, screen, ship, bullets):
     if len(bullets) < ai_settings.bullets_allowed:
         new_bullet = Bullet(ai_settings, screen, ship)
         bullets.add(new_bullet)
+
 
 # ---KeyUp events check---
 def check_keyup_events(event, ship):
@@ -41,6 +43,7 @@ def check_keyup_events(event, ship):
         ship.moving_right = False
     if event.key == pygame.K_LEFT:
         ship.moving_left = False
+
 
 # ---Game event listener---
 def check_events(ai_settings, screen, stats, sb, play_button, ship, aliens, bullets):
@@ -62,12 +65,14 @@ def check_events(ai_settings, screen, stats, sb, play_button, ship, aliens, bull
         elif event.type == pygame.KEYUP:
             check_keyup_events(event, ship)         
 
+
 # ---Play button appearance condition---
 def check_play_button(ai_settings, screen, stats, sb, play_button, ship, aliens, bullets, mouse_x, mouse_y):
     # ---Start a new game when the player clicks Play---
     button_clicked = play_button.rect.collidepoint(mouse_x, mouse_y)
     if button_clicked and not stats.game_active:
        start_game(ai_settings, screen, stats, sb, ship, aliens, bullets)
+
 
 # ---Start game conditions---
 def start_game(ai_settings, screen, stats, sb, ship, aliens, bullets):
@@ -94,17 +99,20 @@ def start_game(ai_settings, screen, stats, sb, ship, aliens, bullets):
     create_fleet(ai_settings, screen, ship, aliens)
     ship.center_ship()
 
+
 # ---Calculate the number of aliens which can be fit in a row on the screen---
 def get_number_aliens_x(ai_settings, alien_width):
     available_space_x = ai_settings.screen_width - 2 * alien_width
     number_aliens_x = int(available_space_x / (2 * alien_width))
     return number_aliens_x
 
+
 # ---Calculate the number of alien rows which can be fit on the screen---
 def get_number_rows(ai_settings, ship_height, alien_height):
     available_space_y = (ai_settings.screen_height - (3 * alien_height) - ship_height)
     number_rows = int(available_space_y / (2 * alien_height))
     return number_rows
+
 
 # ---Alien creation---
 def create_alien(ai_settings, screen, aliens, alien_number, row_number):
@@ -118,6 +126,7 @@ def create_alien(ai_settings, screen, aliens, alien_number, row_number):
     # print(alien.x)
     # print("X: " + str(alien.rect.x))
     # print("Y: " + str(alien.rect.y))
+
 
 # ---Fleet creation---
 def create_fleet(ai_settings, screen, ship, aliens):
@@ -133,6 +142,7 @@ def create_fleet(ai_settings, screen, ship, aliens):
         for alien_number in range(number_aliens_x):
             create_alien(ai_settings, screen, aliens, alien_number, row_number)
         
+
 # ---Frame update---
 def screen_update(ai_settings, screen, stats, sb, ship, aliens, bullets, play_button, powerups):
     screen.fill(ai_settings.bg_color)
@@ -152,6 +162,7 @@ def screen_update(ai_settings, screen, stats, sb, ship, aliens, bullets, play_bu
 
     pygame.display.flip()
 
+
 # ---Bullets state update---
 def update_bullets(ai_settings, screen, stats, sb, ship, aliens, bullets, powerups):
     # ---update bullet positions---
@@ -164,6 +175,7 @@ def update_bullets(ai_settings, screen, stats, sb, ship, aliens, bullets, poweru
     # print(len(bullets))
     check_bullet_alien_collisions(ai_settings, screen, stats, sb, ship, aliens, bullets, powerups)
     
+
 # ---ALien-Bullet collision condition check---
 def check_bullet_alien_collisions(ai_settings, screen, stats, sb, ship, aliens, bullets, powerups):
     # ---Check for any bullets that have hit aliens---
@@ -188,6 +200,7 @@ def check_bullet_alien_collisions(ai_settings, screen, stats, sb, ship, aliens, 
         ai_settings.powerup_probability_range -= 1
         create_fleet(ai_settings, screen, ship, aliens)
 
+
 # ---Fleet edge of the screen collision check---
 def check_fleet_edges(ai_settings, aliens):
     for alien in aliens.sprites():
@@ -195,11 +208,13 @@ def check_fleet_edges(ai_settings, aliens):
             change_fleet_direction(ai_settings, aliens)
             break
 
+
 # ---Fleet direction changing on reaching the edge of the screen---
 def change_fleet_direction(ai_settings, aliens):
     for alien in aliens.sprites():
         alien.rect.y += ai_settings.fleet_drop_speed
     ai_settings.fleet_direction *= -1
+
 
 # ---Actions which runs after ship hit---
 def ship_hit(ai_settings, stats, sb, screen, ship, aliens, bullets):
@@ -224,6 +239,7 @@ def ship_hit(ai_settings, stats, sb, screen, ship, aliens, bullets):
         stats.game_active = False
         pygame.mouse.set_visible(True)
 
+
 # ---If alien reach the bottom of the screen  - ship_hit()---
 def check_aliens_bottom(ai_settings, stats, sb, screen, ship, aliens, bullets):
     screen_rect = screen.get_rect()
@@ -231,6 +247,7 @@ def check_aliens_bottom(ai_settings, stats, sb, screen, ship, aliens, bullets):
         if alien.rect.bottom >= screen_rect.bottom:
             ship_hit(ai_settings, stats, sb, screen, ship, aliens, bullets)
             break
+
 
 # ---Aliens state update on collision condition---
 def update_aliens(ai_settings, stats, sb, screen, ship, aliens, bullets):
@@ -248,6 +265,7 @@ def update_aliens(ai_settings, stats, sb, screen, ship, aliens, bullets):
     check_aliens_bottom(ai_settings, stats, sb, screen, ship, aliens, bullets)
 
 
+# High score check
 def check_high_score(stats, sb):
     if stats.score > stats.high_score:
         stats.high_score = stats.score
@@ -264,44 +282,26 @@ def create_powerup(ai_settings, screen, powerups, alien):
         powerups.add(powerup)
 
 
-def check_powerup_collisions(ai_settings, screen, ship, powerups, bullets, sb, stats):
-    rect_x = list(range(ship.rect.x + 60))
-    rect_right_x = ship.rect.x + 60
-    rect_hitbox = rect_x[ship.rect.x:rect_right_x]
-    for powerup in powerups:
-        if powerup.rect.bottom >= ship.rect.top:
-            if powerup.rect.x in rect_hitbox:
+# ---Define powerup type via random---
+def get_powerup_type(ai_settings):
+    powerup_type_factor = randint(0, 101)
                 
-                # ---Powerup type initialization---
-                powerup_type_factor = randint(0, 101)
-                print("Powerup type factor = " + str(powerup_type_factor))
-                if powerup_type_factor < 25:
-                    ai_settings.mega_bullet_active = True
-                    print("Mega Bullet")
-                elif powerup_type_factor < 50:
-                    ai_settings.super_sonic_bullets_active = True
-                    print("Sonic bullets")
-                elif powerup_type_factor < 75:
-                    ai_settings.alien_freezing_active = True
-                    print("Alien freezing")
-                elif powerup_type_factor < 100:
-                    ai_settings.additional_ship_active = True
-                    print("Additional ship")
+    if powerup_type_factor < 25:
+        ai_settings.mega_bullet_active = True
+    elif powerup_type_factor < 50:
+        ai_settings.super_sonic_bullets_active = True
+    elif powerup_type_factor < 75:
+        ai_settings.alien_freezing_active = True
+    elif powerup_type_factor < 100:
+        ai_settings.additional_ship_active = True
 
-                ai_settings.current_time = time.time()
-                ai_settings.current_time = int(ai_settings.current_time)
 
-                powerups.remove(powerup)
-
-        if powerup.rect.bottom >= ship.screen_rect.bottom:
-            powerups.remove(powerup)
-            print("Out of screen!")
-
+# ---Activate defined powerup---
+def activate_powerup(ai_settings, sb, stats):
 
     # ---Mega Bullet---
     if ai_settings.mega_bullet_active and int(time.time()) < ai_settings.current_time + 3:
         ai_settings.bullet_width = 300
-        # print("Test")
     else:
        ai_settings.mega_bullet_active = False
        ai_settings.bullet_width = 3
@@ -324,13 +324,37 @@ def check_powerup_collisions(ai_settings, screen, ship, powerups, bullets, sb, s
     
     # ---Additional ship---
     if ai_settings.additional_ship_active:
-        if stats.ships_left < 8:
+
+        if stats.ships_left < 6:
             stats.ships_left += 1
-            print("Ship limit: " + str(stats.ships_left))
             sb.prep_ships()
-        else:
-            print("You reached the maximum of ships limit!")
+
         ai_settings.additional_ship_active = False
+
+
+# ---Handle powerups by ship---
+def check_powerup_collisions(ai_settings, screen, ship, powerups, bullets, sb, stats):
+    rect_x = list(range(ship.rect.x + 60))
+    rect_right_x = ship.rect.x + 60
+    rect_hitbox = rect_x[ship.rect.x:rect_right_x]
+
+    for powerup in powerups:
+        if powerup.rect.bottom >= ship.rect.top:
+            if powerup.rect.x in rect_hitbox:
+                
+                # ---Powerup type initialization---
+                get_powerup_type(ai_settings)
+
+                ai_settings.current_time = time.time()
+                ai_settings.current_time = int(ai_settings.current_time)
+
+                powerups.remove(powerup)
+
+        if powerup.rect.bottom >= ship.screen_rect.bottom:
+            powerups.remove(powerup)
+
+    activate_powerup(ai_settings, sb, stats)
+    
 
 
 

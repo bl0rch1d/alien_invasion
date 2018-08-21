@@ -26,6 +26,7 @@ class Ship(Sprite):
 
 
     def update(self):
+        
         # ---Update the ship's center value, not the rect---
         # ---and limiting the ship's range---
         if self.moving_right and self.rect.right < self.screen_rect.right:
